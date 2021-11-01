@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<link rel="shortcut icon" href="img/kurento.png" type="image/png" />
+
+<link rel="stylesheet"
+	href="webjars/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="webjars/ekko-lightbox/dist/ekko-lightbox.min.css">
+<link rel="stylesheet" href="webjars/demo-console/index.css">
+<link rel="stylesheet" href="css/kurento.css">
+
+<script src="webjars/jquery/dist/jquery.min.js"></script>
+<script src="webjars/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="webjars/ekko-lightbox/dist/ekko-lightbox.min.js"></script>
+<script src="webjars/draggabilly/draggabilly.pkgd.min.js"></script>
+<script src="/webjars/webrtc-adapter/release/adapter.js"></script>
+<script src="webjars/demo-console/index.js"></script>
+
+<script src="js/kurento-utils.js"></script>
+<script src="js/index.js"></script>
+<title>Kurento Tutorial 4: Video Call 1 to 1 with WebRTC</title>
+   <script type="text/javascript">
+var urlParam = location.search.substring(1);
+ // URLにパラメータが存在する場合
+ if(urlParam) {
+   // 「&」が含まれている場合は「&」で分割
+   var param = urlParam.split('&');
+  
+   // パラメータを格納する用の配列を用意
+   var paramArray = [];
+  
+   // 用意した配列にパラメータを格納
+   for (i = 0; i < param.length; i++) {
+     var paramItem = param[i].split('=');
+     paramArray[paramItem[0]] = paramItem[1];
+   }
+   name = paramArray.name;
+ }
+
+  </script>
+</head>
+<body style="border-box;max-width: 100%;  width: 100vw;height: 100vh;overflow-y: scroll;overflow-x: hidden;-webkit-overflow-scrolling: touch;">
+	<div class="container">
+		<div class="row">
+			<div class="col-12" style="position:relative;padding:0 0 0 0;">
+				<div id="videoBig" style="padding:0 0 0 0;">
+					<video id="videoOutput" autoplay playsinline width="100%" height="100%"
+						poster="img/pictonlogo.png" ></video>
+				</div>
+				<div id="videoSmall">
+					<video id="videoInput" autoplay playsinline width="240px" height="180px"
+						poster="img/pictonlogo.png"></video>
+				</div>
+				<div class="row">
+					<div class="col-md-6 p-0">
+                               			<div id="yourname"> </div> 
+					</div>
+					<div class="online col-md-6 text-left p-0" style="padding:0 0 0 0">
+						<a id="register" href="#" class="btn btn-primary"><span class="glyphicon glyphicon-plus"></span><div id="area1">ONLINEにする</div></a>
+					</div>
+				</div>
+				<div class="row">
+					<div class="aite col-6 p-0">
+					<!--	<input id="peer" name="peer" class="form-control" type="text" style="font-size: 16px;">-->
+					<div id="peer"></div>
+					</div>
+					<div class="callb col-6 text-right p-0">
+						<a id="call" href="#" class="btn btn-success"><span
+							class="glyphicon glyphicon-play"></span> Call</a> <a id="terminate"
+							href="#" class="btn btn-danger"><span
+							class="glyphicon glyphicon-stop"></span> Stop</a> <div id="peer2"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+  <div id="chatroom"></div>
+
+
+  <script>
+var inputElem = document.querySelector('target_element');
+inputElem.addEventListener('focus', function() {
+    var scrollTop  = window.scrollY;
+    var scrollLeft = window.scrollX;
+ 
+    fixedElem.style.position = 'absolute';
+    fixedElem.style.bottom      = (scrollTop + 20) + 'px';
+});
+ 
+inputElem.addEventListener('blur', function() {
+    // キーボードが消える時間を考慮してsetTimeoutの処理をする。
+    setTimeout(function() {
+        fixedElem.style.position = '';
+        fixedElem.style.top      = '';
+    }, 200);
+});
+
+        $(window).scroll(function() {
+        var elem = document.getElementById('target_element');
+        var rect = elem.getBoundingClientRect();
+        var elemtop = rect.top + window.pageYOffset;
+
+        height=screen.availHeight;
+        height2=document.documentElement.clientHeight;
+        var emp = $(this).scrollTop();
+
+
+ target = document.getElementById('target_element');
+ emp2=300+emp;
+ if((emp<26) && (emp>0)){
+    target.style.bottom =  emp+'px';
+ } else {
+    target.style.bottom =  '26px';
+ }
+  })
+  </script>
+
+
+  <script type="text/javascript">
+    var hig = window.innerHeight;
+    if(hig>640)hig=640;
+    var hi = hig-190;
+    var wid = window.innerWidth;
+    var pad = 0;
+    var wi = wid-300;
+    var hi2 = hi-140;
+    if(wid>=768){
+      pad = (window.innerWidth-768)/2;
+      wi=450;
+      hi2=hig-140;
+    }
+    if(wid>=992){
+      pad = (window.innerWidth-992)/2;
+      wi=670;
+      hi2=hig-140;
+    }
+    if(wid>=1200){
+      pad = (window.innerWidth-1200)/2;
+      wi=870;
+      hi2=hig-140;
+    }
+    var console = new Console();
+    var winwidth = window.innerWidth;
+    hi = window.innerHeight-200;
+
+
+
+    document.getElementById("chatroom").innerHTML='<iframe id="target_element" src="https://live.jvideo.club/tel?room=100" frameborder="0" style="z-index:100;position:fixed !important;position:absolute;bottom:0px;left:0px;width:'+winwidth+'px;height:400px;"></iframe>';
+    
+function showWindowSize() { 
+    var hig = window.innerHeight;
+    if(hig>640)hig=640;
+    var hi = hig-190;
+    var wid = window.innerWidth;
+    var pad = 0;
+    var wi = wid-300;
+    var hi2 = hi-140;
+    if(wid>=768){
+      pad = (window.innerWidth-768)/2;
+      wi=450;
+      hi2=hig-140;
+    }
+    if(wid>=992){
+      pad = (window.innerWidth-992)/2;
+      wi=670;
+      hi2=hig-140;
+    }
+    if(wid>=1200){
+      pad = (window.innerWidth-1200)/2;
+      wi=870;
+      hi2=hig-140;
+    }
+    document.getElementById("item").innerHTML="<iframe name='item' style='width:300px;height:"+hi2+"px;z-index:100;position:absolute;top:140px;left:"+wi+"px;' frameborder='0'></iframe>";
+}
+$(window).resize(showWindowSize);
+
+</script>
+
+
+
+
+
+
+   <script type="text/javascript">
+    var winwidth = window.innerWidth;
+document.getElementById("yourname").innerHTML="<input id='name' name='name' class='form-contro' type='hidden' value='"+name+"'/> </div>";
+  </script>
+</body>
+</html>

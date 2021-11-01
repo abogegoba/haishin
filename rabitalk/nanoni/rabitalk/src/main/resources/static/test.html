@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html style="position: fixed;height: 100%;overflow: hidden;">
+<head>
+<meta charset="utf-8">
+<meta http-equiv="cache-control" content="no-cache">
+<meta http-equiv="pragma" content="no-cache">
+<meta http-equiv="expires" content="0">
+<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0,maximum-scale=1.0,user-scalable=no,viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<link rel="shortcut icon" href="img/kurento.png" type="image/png" />
+
+<link rel="stylesheet"
+	href="webjars/bootstrap/dist/css/bootstrap.min.css">
+<link rel="stylesheet"
+	href="webjars/ekko-lightbox/dist/ekko-lightbox.min.css">
+<link rel="stylesheet" href="webjars/demo-console/index.css">
+<link rel="stylesheet" href="css/kurento.css">
+<link rel="stylesheet" href="css/srtyle.css">
+
+<script src="webjars/jquery/dist/jquery.min.js"></script>
+<script src="webjars/bootstrap/dist/js/bootstrap.min.js"></script>
+<script src="webjars/ekko-lightbox/dist/ekko-lightbox.min.js"></script>
+<script src="/webjars/webrtc-adapter/release/adapter.js"></script>
+<script src="webjars/demo-console/index.js"></script>
+
+<script src="js/kurento-utils.js"></script>
+<script src="js/index.js"></script>
+<script type="text/javascript">
+var urlParam = location.search.substring(1);
+ // URLにパラメータが存在する場合
+ if(urlParam) {
+   // 「&」が含まれている場合は「&」で分割
+   var param = urlParam.split('&');
+  
+   // パラメータを格納する用の配列を用意
+   var paramArray = [];
+  
+   // 用意した配列にパラメータを格納
+   for (i = 0; i < param.length; i++) {
+     var paramItem = param[i].split('=');
+     paramArray[paramItem[0]] = paramItem[1];
+   }
+   room = paramArray.room;
+   check = paramArray.check;
+ }
+
+  </script>
+<title>nanoni</title>
+</head>
+<body style="border-box;max-width: 100%;  width: 100vw;height: 100vh;overflow-y: scroll;overflow-x: hidden;-webkit-overflow-scrolling: touch;">
+	<div class="container" id="scroll-box">
+		<div class="row">
+      <div class="col-md-12" style="position:relative;padding:0 0 0 0;">
+        <div id="videoBig" style="width:100% !important;height:480px;">
+          <video class="videofill" id="video" autoplay playsinline width="100%" height="640px" poster="img/webrtc.png" style="z-index:0;object-fit:fill;width:100%;height:640;padding:0 0 0 0;"></video>
+
+          <div style='z-index:100;position:absolute;top:20px;'>
+            <div id="roomno"> </div>
+            <a id="presenter" href="#" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> Presenter </a> 
+            <a id="stop" href="#" class="btn btn-danger"><span class="glyphicon glyphicon-stop"></span> Stop</a>
+            <a id="url" href="#" class="btn btn-success"><span class="glyphicon glyphicon-play"></span> URL </a>
+            <div style="position:absolute;top:40px;left:150px"><a href="https://jvideo.club/clear.html" class="btn btn-danger" target="item"><span class="glyphicon glyphicon-stop"></span>商品を消す</a></div>
+            <div id="count"></div>
+            <span id="width"></span>
+            <div id="items"></div>
+            <div id="item"></div>
+          </div>
+          <div>
+            <iframe src="https://jvideo.club" frameborder="0" id="f1" width="100%" height="1200px" style='z-index:100;position:absolute;top:710px;left:0px;'></iframe>
+          </div>
+
+        </div>
+        
+			</div>
+		</div>
+  </div>
+  
+  <div id="chatroom"></div>
+  <script>
+var inputElem = document.querySelector('target_element');
+inputElem.addEventListener('focus', function() {
+    var scrollTop  = window.scrollY;
+    var scrollLeft = window.scrollX;
+ 
+    fixedElem.style.position = 'absolute';
+    fixedElem.style.bottom      = (scrollTop + 20) + 'px';
+});
+ 
+inputElem.addEventListener('blur', function() {
+    // キーボードが消える時間を考慮してsetTimeoutの処理をする。
+    setTimeout(function() {
+        fixedElem.style.position = '';
+        fixedElem.style.top      = '';
+    }, 200);
+});
+
+        $(window).scroll(function() {
+        var elem = document.getElementById('target_element');
+        var rect = elem.getBoundingClientRect();
+        var elemtop = rect.top + window.pageYOffset;
+
+        height=screen.availHeight;
+        height2=document.documentElement.clientHeight;
+        var emp = $(this).scrollTop();
+
+
+ target = document.getElementById('target_element');
+ emp2=300+emp;
+ if((emp<26) && (emp>0)){
+    target.style.bottom =  emp+'px';
+ } else {
+    target.style.bottom =  '26px';
+ }
+  })
+  </script>
+
+
+  <script type="text/javascript">
+    var hig = window.innerHeight;
+    if(hig>640)hig=640;
+    var hi = hig-190;
+    var wid = window.innerWidth;
+    var pad = 0;
+    var wi = wid-300;
+    var hi2 = hi-140;
+    if(wid>=768){
+      pad = (window.innerWidth-768)/2;
+      wi=450;
+      hi2=hig-140;
+    }
+    if(wid>=992){
+      pad = (window.innerWidth-992)/2;
+      wi=670;
+      hi2=hig-140;
+    }
+    if(wid>=1200){
+      pad = (window.innerWidth-1200)/2;
+      wi=870;
+      hi2=hig-140;
+    }
+    var console = new Console();
+    var winwidth = window.innerWidth;
+    hi = window.innerHeight-200;
+
+
+
+    document.getElementById("chatroom").innerHTML='<iframe id="target_element" src="https://live.jvideo.club/presen?room='+room+'" frameborder="0" style="z-index:100;position:fixed !important;position:absolute;bottom:0px;left:0px;width:'+winwidth+'px;height:400px;"></iframe>';
+    document.getElementById("roomno").innerHTML="<input type='hidden' id='input_message' value='"+room+"'>";
+    document.getElementById("item").innerHTML="<iframe name='item' style='width:300px;height:"+hi2+"px;z-index:100;position:absolute;top:140px;left:"+wi+"px;' frameborder='0'></iframe>";
+    
+function showWindowSize() { 
+    var hig = window.innerHeight;
+    if(hig>640)hig=640;
+    var hi = hig-190;
+    var wid = window.innerWidth;
+    var pad = 0;
+    var wi = wid-300;
+    var hi2 = hi-140;
+    if(wid>=768){
+      pad = (window.innerWidth-768)/2;
+      wi=450;
+      hi2=hig-140;
+    }
+    if(wid>=992){
+      pad = (window.innerWidth-992)/2;
+      wi=670;
+      hi2=hig-140;
+    }
+    if(wid>=1200){
+      pad = (window.innerWidth-1200)/2;
+      wi=870;
+      hi2=hig-140;
+    }
+    document.getElementById("item").innerHTML="<iframe name='item' style='width:300px;height:"+hi2+"px;z-index:100;position:absolute;top:140px;left:"+wi+"px;' frameborder='0'></iframe>";
+}
+$(window).resize(showWindowSize);
+
+</script>
+</body>
+</html>
